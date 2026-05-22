@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>IURD LIVE BUG</title>
+    <script type="text/javascript" src="js/lib/anime.min.js"></script>
+    <script type="text/javascript" src="js/spx_interface.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <link rel="stylesheet" type="text/css" id="DynamicTheme" href="themes/Default.css" />
+    <style>
+        .SPXWindow {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        #gfx {
+            opacity: 0; /* animated */
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+            filter: drop-shadow(0px 6px 15px rgba(0, 0, 0, 0.35));
+            pointer-events: auto;
+        }
+
+        /* 4 Corners positions */
+        #gfx.top-left {
+            top: 5vh;
+            left: 3vw;
+            align-items: flex-start;
+        }
+
+        #gfx.top-right {
+            top: 5vh;
+            right: 3vw;
+            align-items: flex-end;
+        }
+
+        #gfx.bottom-left {
+            bottom: 8.5vh;
+            left: 3vw;
+            align-items: flex-start;
+        }
+
+        #gfx.bottom-right {
+            bottom: 8.5vh;
+            right: 3vw;
+            align-items: flex-end;
+        }
+
+        /* Squared/Rectangular layout as requested (no slants) */
+        #gfx #topBar, #gfx #bottomBar {
+            width: 11vw;
+            padding: 0.2vw 1vw;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+        }
+
+        /* Top Bar: LIVE Indicator */
+        #topBar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 3.8vh;
+            background: var(--theme-brandColor, #cc0000);
+            color: #ffffff;
+            box-sizing: border-box;
+            border-bottom: 0.15vw solid rgba(255, 255, 255, 0.2);
+        }
+
+        #topText {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.2vw;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            line-height: 1;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Bottom Bar: Clock / Custom Text */
+        #bottomBar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 4.8vh;
+            background: var(--theme-iurd-bottom-bg, linear-gradient(to bottom, #f0f0f0 0%, #d8d8d8 100%));
+            color: var(--theme-iurd-bottom-text-color, #1a1a1a);
+            box-sizing: border-box;
+            border-bottom: var(--theme-accent-width, 0.3vw) solid var(--theme-brandColor, #cc0000);
+        }
+
+        #bottomText {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.4vw;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+            line-height: 1;
+        }
+    </style>
+
+    <script>
+        let clockInterval;
+        let posClass = 'bottom-right';
+        let clipNone = "";
+        let clipEast = "";
+
+        function runTemplateUpdate() {
+            // Apply visual theme
+            e('DynamicTheme').href = e('f99').innerText;
+
+            // Handle labels
+            e('topText').innerHTML = htmlDecode(e('f0').innerText);
+
+            // Handle Clock Mode
+            let clockMode = e('f1').innerText.trim();
+            if (clockInterval) clearInterval(clockInterval);
+
+            if (clockMode === 'custom') {
+                e('bottomText').innerHTML = htmlDecode(e('f2').innerText);
+            } else {
+                function updateClock() {
+                    let now = new Date();
+                    let hh = String(now.getHours()).padStart(2, '0');
+                    let mm = String(now.getMinutes()).padStart(2, '0');
+                    let ss = String(now.getSeconds()).padStart(2, '0');
+                    if (clockMode === 'hhmmss') {
+                        e('bottomText').innerHTML = `${hh}:${mm}:${ss}`;
+                    } else {
+                        e('bottomText').innerHTML = `${hh}:${mm}`;
+                    }
+                }
+                updateClock();
+                clockInterval = setInterval(updateClock, 1000);
+            }
+
+            // Handle Position
+            let position = e('f3').innerText.trim();
+            posClass = position; // e.g. top-left, bottom-right, etc.
+            let gfx = e('gfx');
+            
+            // Set position and orientation classes
+            let isLeft = position.indexOf('left') !== -1;
+            gfx.className = position + ' ' + (isLeft ? 'pos-left' : 'pos-right');
+
+            // Set up dynamic clip paths for animations (completely rectangular)
+            clipNone = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
+            if (isLeft) {
+                clipEast = "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)";
+            } else {
+                clipEast = "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)";
+            }
+
+            setTimeout(runAnimationIN, 50);
+        }
+
+        function runAnimationIN() {
+            var timelineIn = anime.timeline({
+                easing: 'easeOutCubic',
+                duration: 600
+            });
+
+            anime.set('#topBar', { clipPath: clipEast });
+            anime.set('#bottomBar', { clipPath: clipEast });
+
+            let isLeft = posClass.indexOf('left') !== -1;
+            let slideDir = isLeft ? '-30%' : '30%';
+
+            timelineIn
+            .add({
+                targets: ['#gfx'],
+                opacity: [0, 1],
+                duration: 50,
+                easing: 'linear'
+            }, 0)
+            .add({
+                targets: ['#topBar'],
+                duration: 450,
+                clipPath: [clipEast, clipNone],
+                translateX: [slideDir, '0%']
+            }, 50)
+            .add({
+                targets: ['#bottomBar'],
+                duration: 450,
+                clipPath: [clipEast, clipNone],
+                translateX: [slideDir, '0%']
+            }, 120)
+            .add({
+                targets: ['#topText', '#bottomText'],
+                opacity: [0, 1],
+                scale: [0.9, 1],
+                duration: 350
+            }, 250);
+        }
+
+        function runAnimationOUT() {
+            var timelineOut = anime.timeline({
+                easing: 'easeInCubic',
+                duration: 450
+            });
+
+            let isLeft = posClass.indexOf('left') !== -1;
+            let slideDir = isLeft ? '-20%' : '20%';
+
+            timelineOut
+            .add({
+                targets: ['#topText', '#bottomText'],
+                opacity: [1, 0],
+                scale: [1, 0.95],
+                duration: 150
+            }, 0)
+            .add({
+                targets: ['#bottomBar'],
+                duration: 300,
+                clipPath: clipEast,
+                translateX: ['0%', slideDir]
+            }, 50)
+            .add({
+                targets: ['#topBar'],
+                duration: 300,
+                clipPath: clipEast,
+                translateX: ['0%', slideDir]
+            }, 100)
+            .add({
+                targets: ['#gfx'],
+                opacity: 0,
+                duration: 50,
+                easing: 'linear'
+            }, 350);
+        }
+
+        // Define definition for SPX importer
+        window.SPXGCTemplateDefinition = {
+            "description": "IURD Live Bug",
+            "playserver": "OVERLAY",
+            "playchannel": "1",
+            "playlayer": "2",
+            "webplayout": "2",
+            "out": "manual",
+            "dataformat": "json",
+            "uicolor": "3",
+            "DataFields": [
+                {
+                    "ftype": "instruction",
+                    "value": "Configure o bug de AO VIVO e relógio da IURD. Escolha a posição de canto de tela desejada."
+                },
+                {
+                    "field": "f0",
+                    "ftype": "textfield",
+                    "title": "Indicador (Texto Superior)",
+                    "value": "AO VIVO"
+                },
+                {
+                    "field": "f1",
+                    "ftype": "dropdown",
+                    "title": "Modo do Horário",
+                    "value": "hhmm",
+                    "items": [
+                        { "text": "Relógio do Sistema (HH:MM)", "value": "hhmm" },
+                        { "text": "Relógio do Sistema (HH:MM:SS)", "value": "hhmmss" },
+                        { "text": "Texto Customizado", "value": "custom" }
+                    ]
+                },
+                {
+                    "field": "f2",
+                    "ftype": "textfield",
+                    "title": "Texto Customizado (se ativado)",
+                    "value": "10:30"
+                },
+                {
+                    "field": "f3",
+                    "ftype": "dropdown",
+                    "title": "Posição na Tela",
+                    "value": "bottom-right",
+                    "items": [
+                        { "text": "Inferior Direito (Bottom-Right)", "value": "bottom-right" },
+                        { "text": "Inferior Esquerdo (Bottom-Left)", "value": "bottom-left" },
+                        { "text": "Superior Direito (Top-Right)", "value": "top-right" },
+                        { "text": "Superior Esquerdo (Top-Left)", "value": "top-left" }
+                    ]
+                },
+                {
+                    "field": "f99",
+                    "ftype": "filelist",
+                    "title": "Visual theme",
+                    "assetfolder": "./themes/",
+                    "extension": "css",
+                    "value": "./themes/Default.css"
+                }
+            ]
+        };
+    </script>
+</head>
+<body>
+    <div class="SPXWindow">
+        <div id="gfx" class="bottom-right pos-right">
+            <div id="topBar">
+                <span id="topText">AO VIVO</span>
+            </div>
+            <div id="bottomBar">
+                <span id="bottomText">10:30</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="hiddenSpxData" style="display:none;">
+        <div id="f0"></div>
+        <div id="f1"></div>
+        <div id="f2"></div>
+        <div id="f3"></div>
+        <div id="f99"></div>
+    </div>
+</body>
+</html>

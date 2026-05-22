@@ -1,0 +1,94 @@
+:root {
+    /* Main Theme Variables */
+    --theme-brandColor: #b0b0b0; /* Brushed Steel */
+    --theme-lite-color: #ffffff; /* Pure Pearl White */
+    --theme-dark-color: #1c2024; /* Deep Slate Gray */
+    --theme-tickerBack: #101214; /* Deep Obsidian Slate */
+
+    --theme-accent-width: 0.5vw;
+
+    /* IURD GC Logo Custom Styling */
+    --theme-iurd-logo-bg: linear-gradient(
+        135deg, 
+        #ffffff 0%, 
+        #e0e0e0 25%, 
+        #999999 50%, 
+        #777777 75%, 
+        #dddddd 100%
+    ); /* Metallic platinum-steel gradient with high light reflections */
+    
+    --theme-iurd-logo-text-bg: linear-gradient(
+        to bottom, 
+        #ffffff 0%, 
+        #e0e0e0 45%, 
+        #999999 50%, 
+        #777777 75%, 
+        #dddddd 100%
+    ); /* Glossy brushed steel look for logo text */
+
+    /* IURD GC Text Custom Styling */
+    --theme-iurd-top-bg: linear-gradient(
+        to right, 
+        #24292e 0%, 
+        #1c2024 50%, 
+        #101214 100%
+    ); /* Deep slate charcoal gradient */
+    
+    --theme-iurd-top-text-color: #ffffff; /* Pure white */
+
+    --theme-iurd-bottom-bg: linear-gradient(
+        to bottom, 
+        #ffffff 0%, 
+        #f6f6f6 50%, 
+        #e5e5e5 100%
+    ); /* Polished pearl white metallic gradient */
+    
+    --theme-iurd-bottom-text-color: #171a1d; /* Slate dark gray text */
+}
+
+/* Custom visual styling enhancements for Terca theme */
+#logoContainer {
+    box-shadow: 0 10px 30px rgba(28, 32, 36, 0.4);
+    filter: drop-shadow(0px 4px 15px rgba(176, 176, 176, 0.25)); /* Slate halo glow */
+}
+
+#logoText {
+    filter: drop-shadow(1px 1px 1px rgba(255, 255, 255, 0.8)) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.3));
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background: var(--theme-iurd-logo-text-bg) !important;
+}
+
+#topBar {
+    border-bottom: 0.1vw solid rgba(176, 176, 176, 0.3); /* Subtle steel separator */
+}
+
+#bottomBar {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* IURD Ticker Custom Styling for Terca theme */
+#tickerHeadline {
+    background: var(--theme-brandColor, #b0b0b0) !important;
+    color: #1c2024 !important; /* Dark Slate contrast */
+}
+
+#headlineText {
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.45) !important;
+}
+
+#tickerBody {
+    background: var(--theme-tickerBack, #101214) !important;
+    border-bottom: 0.35vw solid var(--theme-brandColor, #b0b0b0) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ticker-span {
+    color: var(--theme-lite-color, #ffffff) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.ticker-separator {
+    color: var(--theme-brandColor, #b0b0b0) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}

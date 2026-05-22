@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>IURD TICKER EXCEL</title>
+    <script type="text/javascript" src="js/lib/anime.min.js"></script>
+    <script type="text/javascript" src="js/lib/axios.min.js"></script>
+    <script type="text/javascript" src="js/spx_interface.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <link rel="stylesheet" type="text/css" id="DynamicTheme" href="themes/Default.css" />
+    <style>
+        .SPXWindow {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        #gfx {
+            opacity: 0; /* animated */
+            position: absolute;
+            left: 3vw;
+            bottom: 1.5vh;
+            width: 94vw;
+            height: 5.2vh;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.4vw;
+            filter: drop-shadow(0px 6px 15px rgba(0, 0, 0, 0.3));
+            pointer-events: auto;
+        }
+
+        /* Left Headline Box */
+        #tickerHeadline {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 2.5vw 0 1.5vw;
+            min-width: 13vw;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            clip-path: polygon(0% 0%, 100% 0%, calc(100% - 1.8vw) 100%, 0% 100%);
+            background: var(--theme-brandColor, #dca842);
+            color: #211513; /* High contrast text */
+            z-index: 2;
+        }
+
+        #headlineText {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.3vw;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            line-height: 1;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
+        }
+
+        /* Right Ticker Body */
+        #tickerBody {
+            height: 100%;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            clip-path: polygon(1.8vw 0%, 100% 0%, 100% 100%, 0% 100%);
+            background: var(--theme-tickerBack, #150f0e);
+            border-bottom: var(--theme-accent-width, 0.35vw) solid var(--theme-brandColor, #dca842);
+            padding: 0 0 0 1.8vw; /* Glued left to the slanted slant and absolute right */
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        #textMask {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #tickerText {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            white-space: nowrap;
+            will-change: transform;
+        }
+
+        #copy1, #copy2 {
+            display: inline-flex;
+            align-items: center;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .ticker-span {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.4vw;
+            font-weight: 700;
+            color: var(--theme-lite-color, #f4ebd2);
+            letter-spacing: 0.02em;
+            display: inline-block;
+        }
+
+        .ticker-separator {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            color: var(--theme-brandColor, #dca842);
+            font-size: 1.5vw;
+            margin: 0 1.5vw;
+            display: inline-block;
+        }
+    </style>
+
+    <script>
+        let stopped = false;
+        let newsItems = [];
+        let scrollX = 0;
+        let textWidth = 0;
+        let speed = 1.5;
+        let animationFrameId = null;
+
+        async function runTemplateUpdate() {
+            // Apply visual theme
+            e('DynamicTheme').href = e('f99').innerText;
+
+            // Apply headline text
+            e('headlineText').innerHTML = htmlDecode(e('f0').innerText);
+
+            // Read Excel file data
+            let file = e('f1').innerText.trim();
+            newsItems = await getExcelData(file);
+
+            if (newsItems.length > 0) {
+                setupTicker();
+                setTimeout(runAnimationIN, 50);
+            }
+        }
+
+        function getExcelData(filename) {
+            return new Promise(resolve => {
+                let excelData = [];
+                let APIcall = "/api/readExcelData";
+                axios.post(APIcall, { filename: filename })
+                .then(function (response) {
+                    let limit = parseInt(e('f2').innerText.trim());
+                    let count = 0;
+                    if (response.data && response.data[0] && response.data[0].data) {
+                        response.data[0].data.forEach(function (row, index) {
+                            if (row[1] && index > 0) {
+                                if (limit === -1 || count < limit) {
+                                    excelData.push(row[1]);
+                                    count++;
+                                }
+                            }
+                        });
+                    }
+                    resolve(excelData);
+                })
+                .catch(function (error) {
+                    console.error("Error fetching Excel data: ", error);
+                    resolve([]);
+                });
+            });
+        }
+
+        function setupTicker() {
+            let separatorHTML = `<span class="ticker-separator">|</span>`;
+            
+            // Repeat the news items if they are too short to ensure seamless infinite loop
+            let itemsToUse = [...newsItems];
+            if (itemsToUse.length > 0 && itemsToUse.length < 8) {
+                while (itemsToUse.length < 12) {
+                    itemsToUse = itemsToUse.concat(newsItems);
+                }
+            }
+
+            let joinedText = itemsToUse.map(item => `<span class="ticker-span">${htmlDecode(item)}</span>`).join(separatorHTML);
+            joinedText += separatorHTML; // Add trailing separator
+
+            // Build double text copies for seamless wrapping
+            e('copy1').innerHTML = joinedText;
+            e('copy2').innerHTML = joinedText;
+
+            // Get width of a single copy
+            textWidth = e('copy1').offsetWidth;
+            
+            // Start position: 0 for right-to-left scrolling
+            scrollX = 0;
+
+            // Configure scrolling speed
+            let speedSetting = parseFloat(e('f3').innerText.trim()) || 2.0;
+            speed = speedSetting * 0.75; // Map speed setting to actual pixel movement rate
+        }
+
+        function startScrolling() {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            stopped = false;
+
+            function scrollLoop() {
+                if (stopped) return;
+                
+                // Move from right to left (negative coordinate change)
+                scrollX -= speed;
+                
+                // When scrollX reaches -textWidth, reset back to 0
+                if (scrollX <= -textWidth) {
+                    scrollX = 0;
+                }
+                
+                e('tickerText').style.transform = `translateX(${scrollX}px)`;
+                animationFrameId = requestAnimationFrame(scrollLoop);
+            }
+            scrollLoop();
+        }
+
+        function runAnimationIN() {
+            stopped = false;
+            
+            // Set initial clips for clean slide-out
+            let clipNone = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
+            let clipEast = "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)";
+            let clipWest = "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)";
+
+            anime.set('#tickerHeadline', { clipPath: clipEast });
+            anime.set('#tickerBody', { clipPath: clipEast });
+            anime.set('#gfx', { opacity: 0 });
+
+            var timelineIn = anime.timeline({
+                easing: 'easeOutCubic',
+                duration: 600
+            });
+
+            timelineIn
+            .add({
+                targets: ['#gfx'],
+                opacity: [0, 1],
+                duration: 50,
+                easing: 'linear'
+            }, 0)
+            .add({
+                targets: ['#tickerBody'],
+                clipPath: [clipEast, clipNone],
+                duration: 500
+            }, 50)
+            .add({
+                targets: ['#tickerHeadline'],
+                clipPath: [clipEast, clipNone],
+                translateX: ['-20%', '0%'],
+                duration: 450
+            }, 120);
+
+            // Start smooth text movement
+            setTimeout(startScrolling, 500);
+        }
+
+        function runAnimationOUT() {
+            stopped = true;
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            let clipEast = "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)";
+
+            var timelineOut = anime.timeline({
+                easing: 'easeInCubic',
+                duration: 500
+            });
+
+            timelineOut
+            .add({
+                targets: ['#tickerText', '#headlineText'],
+                opacity: [1, 0],
+                duration: 150
+            }, 0)
+            .add({
+                targets: ['#tickerHeadline'],
+                clipPath: clipEast,
+                translateX: ['0%', '-20%'],
+                duration: 300
+            }, 50)
+            .add({
+                targets: ['#tickerBody'],
+                clipPath: clipEast,
+                duration: 350
+            }, 100)
+            .add({
+                targets: ['#gfx'],
+                opacity: 0,
+                duration: 50,
+                easing: 'linear'
+            }, 450);
+        }
+
+        // Register template definition for SPX Controller
+        window.SPXGCTemplateDefinition = {
+            "description": "IURD Ticker Excel",
+            "playserver": "OVERLAY",
+            "playchannel": "1",
+            "playlayer": "1",
+            "webplayout": "1",
+            "out": "manual",
+            "dataformat": "json",
+            "uicolor": "3",
+            "DataFields": [
+                {
+                    "ftype": "instruction",
+                    "value": "Exibe notícias em loop rolando da DIREITA PARA ESQUERDA carregadas de um arquivo Excel (.xlsx). Alinhado milimetricamente ao padrão visual IURD."
+                },
+                {
+                    "field": "f0",
+                    "ftype": "textfield",
+                    "title": "Manchete (Tarja Esquerda)",
+                    "value": "NOTÍCIAS"
+                },
+                {
+                    "field": "f1",
+                    "ftype": "filelist",
+                    "title": "Arquivo Excel (.xlsx)",
+                    "assetfolder": "/excel/ticker-demo/",
+                    "extension": "xlsx",
+                    "value": "/excel/ticker-demo/basic-news-ticker.xlsx"
+                },
+                {
+                    "field": "f2",
+                    "ftype": "number",
+                    "title": "Quantidade máxima de linhas (todas = -1)",
+                    "value": "-1"
+                },
+                {
+                    "field": "f3",
+                    "ftype": "number",
+                    "title": "Velocidade de rolagem (Padrão '2')",
+                    "value": "2"
+                },
+                {
+                    "field": "f99",
+                    "ftype": "filelist",
+                    "title": "Visual theme",
+                    "assetfolder": "./themes/",
+                    "extension": "css",
+                    "value": "./themes/Default.css"
+                }
+            ]
+        };
+    </script>
+</head>
+<body>
+    <div class="SPXWindow">
+        <div id="gfx">
+            <div id="tickerHeadline">
+                <span id="headlineText">NOTÍCIAS</span>
+            </div>
+            <div id="tickerBody">
+                <div id="textMask">
+                    <div id="tickerText">
+                        <span id="copy1"></span>
+                        <span id="copy2"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden elements for SPX interface parameters -->
+    <div id="hiddenSpxData" style="display:none;">
+        <div id="f0"></div>
+        <div id="f1"></div>
+        <div id="f2"></div>
+        <div id="f3"></div>
+        <div id="f99"></div>
+    </div>
+</body>
+</html>

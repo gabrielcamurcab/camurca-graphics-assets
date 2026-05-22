@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>IURD LOGO</title>
+    <script type="text/javascript" src="js/lib/anime.min.js"></script>
+    <script type="text/javascript" src="js/spx_interface.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <link rel="stylesheet" type="text/css" id="DynamicTheme" href="themes/Default.css" />
+    <style>
+        .SPXWindow {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            position: absolute;
+        }
+
+        #gfx {
+            opacity: 0; /* animated */
+            z-index: 15;
+            bottom: 8.5vh;
+            left: 3vw;
+            position: absolute;
+            transform-origin: bottom left;
+        }
+
+        #logoContainer {
+            min-width: 15vw;
+            height: 11vh;
+            padding: 0.5vw 2.5vw 0.5vw 1.2vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            
+            /* slanted cut on the right */
+            clip-path: polygon(0% 0%, 100% 0%, calc(100% - 2.2vw) 100%, 0% 100%);
+            
+            /* Left accent border using SPX Theme's brandColor */
+            border-left: var(--theme-accent-width, 0.5vw) solid var(--theme-brandColor, #267617);
+            
+            /* Theme overrides with metallic silver/gray fallback */
+            background: var(--theme-iurd-logo-bg, linear-gradient(135deg, #f6f6f6 0%, #e0e0e0 25%, #c0c0c0 50%, #dcdcdc 75%, #fafafa 100%));
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        /* 3D Glossy metallic logo text */
+        #logoText {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 2.2vw;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: 0.03em;
+            
+            /* Metallic 3D gradient look */
+            background: var(--theme-iurd-logo-text-bg, linear-gradient(to bottom, #888888 0%, #333333 45%, #111111 50%, #444444 55%, #666666 100%));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(1px 1px 1px rgba(255, 255, 255, 0.8));
+            display: inline-block;
+        }
+
+        #logoImg {
+            width: 100%;
+            height: 100%;
+            max-height: 9.5vh;
+            object-fit: contain;
+            display: none;
+        }
+
+        /* Premium sweeps reflective shine animation */
+        #logoContainer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: skewX(-20deg);
+            animation: shineSweep 4.5s infinite ease-in-out;
+        }
+
+        @keyframes shineSweep {
+            0% { left: -150%; }
+            45% { left: 150%; }
+            100% { left: 150%; }
+        }
+    </style>
+
+    <script>
+        let clipNone = "polygon(0% 0%, 100% 0%, calc(100% - 2.2vw) 100%, 0% 100%)";
+        let clipEast = "polygon(0% 0%, 0% 0%, calc(0% - 0vw) 100%, 0% 100%)";
+
+        function runTemplateUpdate() {
+            // Apply visual theme from dropdown
+            e('DynamicTheme').href = e('f99').innerText;
+
+            // Handle dynamic logo image vs logo text
+            let imgPath = e('f1').innerText.trim();
+            if (imgPath && imgPath !== 'none' && imgPath !== '') {
+                e('logoImg').src = imgPath;
+                e('logoImg').style.display = 'block';
+                e('logoText').style.display = 'none';
+            } else {
+                e('logoText').innerHTML = htmlDecode(e('f0').innerText);
+                e('logoImg').style.display = 'none';
+                e('logoText').style.display = 'inline-block';
+            }
+
+            // Handle dynamic logo background image
+            let bgImgPath = e('f2').innerText.trim();
+            if (bgImgPath && bgImgPath !== 'none' && bgImgPath !== '') {
+                e('logoContainer').style.backgroundImage = "url('" + bgImgPath + "')";
+                e('logoContainer').style.backgroundSize = "cover";
+                e('logoContainer').style.backgroundPosition = "center center";
+                e('logoContainer').style.backgroundRepeat = "no-repeat";
+            } else {
+                e('logoContainer').style.backgroundImage = "";
+                e('logoContainer').style.backgroundSize = "";
+                e('logoContainer').style.backgroundPosition = "";
+                e('logoContainer').style.backgroundRepeat = "";
+            }
+
+            setTimeout(runAnimationIN, 50);
+        }
+
+        function runAnimationIN() {
+            var timelineIn = anime.timeline({
+                easing: 'easeOutCubic',
+                duration: 600
+            });
+
+            timelineIn
+            .add({
+                targets: ['#gfx'],
+                opacity: [0, 1],
+                duration: 50,
+                easing: 'linear'
+            }, 0)
+            .add({
+                targets: ['#logoContainer'],
+                duration: 450,
+                clipPath: [clipEast, clipNone],
+                opacity: [0, 1]
+            }, 50)
+            .add({
+                targets: ['#logoText', '#logoImg'],
+                opacity: [0, 1],
+                scale: [0.92, 1],
+                duration: 400
+            }, 150);
+        }
+
+        function runAnimationOUT() {
+            var timelineOut = anime.timeline({
+                easing: 'easeInCubic',
+                duration: 500
+            });
+
+            timelineOut
+            .add({
+                targets: ['#logoText', '#logoImg'],
+                opacity: [1, 0],
+                scale: [1, 0.95],
+                duration: 200
+            }, 0)
+            .add({
+                targets: ['#logoContainer'],
+                duration: 350,
+                clipPath: clipEast,
+                opacity: [1, 0]
+            }, 100)
+            .add({
+                targets: ['#gfx'],
+                opacity: 0,
+                duration: 50,
+                easing: 'linear'
+            }, 450);
+        }
+
+        // Define definition for SPX importer
+        window.SPXGCTemplateDefinition = {
+            "description": "IURD Logo Strap",
+            "playserver": "OVERLAY",
+            "playchannel": "1",
+            "playlayer": "4",
+            "webplayout": "4",
+            "out": "manual",
+            "dataformat": "json",
+            "uicolor": "3",
+            "DataFields": [
+                {
+                    "ftype": "instruction",
+                    "value": "Configure a logo da IURD. Se preencher a Imagem, ela será exibida. Se deixar a Imagem vazia, o Texto será exibido com estilo cromado/metálico."
+                },
+                {
+                    "field": "f0",
+                    "ftype": "textfield",
+                    "title": "Texto da Logo",
+                    "value": "PONTO DE FÉ"
+                },
+                {
+                    "field": "f1",
+                    "ftype": "filelist",
+                    "title": "Imagem da Logo (opcional)",
+                    "assetfolder": "/media/images/",
+                    "extension": "png",
+                    "value": ""
+                },
+                {
+                    "field": "f2",
+                    "ftype": "filelist",
+                    "title": "Imagem de Fundo da Logo (opcional)",
+                    "assetfolder": "/media/images/",
+                    "extension": "png",
+                    "value": ""
+                },
+                {
+                    "field": "f99",
+                    "ftype": "filelist",
+                    "title": "Visual theme",
+                    "assetfolder": "./themes/",
+                    "extension": "css",
+                    "value": "./themes/Default.css"
+                }
+            ]
+        };
+    </script>
+</head>
+<body>
+    <div class="SPXWindow left">
+        <div id="gfx">
+            <div id="logoContainer">
+                <span id="logoText"></span>
+                <img id="logoImg" alt="logo" />
+            </div>
+        </div>
+    </div>
+
+    <div id="hiddenSpxData" style="display:none;">
+        <div id="f0"></div>
+        <div id="f1"></div>
+        <div id="f2"></div>
+        <div id="f99"></div>
+    </div>
+</body>
+</html>

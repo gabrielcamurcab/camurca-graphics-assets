@@ -1,0 +1,22 @@
+
+# SPX Rundown item CSV export. (More info: https://docs.spxgraphics.com/Guides/Tutorials/how+to+use+csv+files)
+
+# description #;Bumper or stinger example
+# playserver #;OVERLAY
+# playchannel #;1
+# playlayer #;5
+# webplayout #;5
+# out #;none
+# uicolor #;3
+# dataformat #;json
+# relpath #;/softpix/html/Template_Pack_1.4.0/BUMPER.html
+# onair #;false
+# project #;MyFirstProject
+# rundown #;MyFirstRundown
+
+# FieldUUIDs #;_COLORVALUE;_BUMPERTEXT;Image;
+# FieldTypes #;dropdown;textfield;filelist;
+# FieldTitls #;Color palette;_BUMPERTEXT;Flare image;
+# Fieldfcalls #;
+
+# ID:auto;3;Swoosh!;./img/flares/whitey.png;

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>IURD QR CODE</title>
+    <script type="text/javascript" src="js/lib/anime.min.js"></script>
+    <script type="text/javascript" src="js/spx_interface.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <link rel="stylesheet" type="text/css" id="DynamicTheme" href="themes/Default.css" />
+    <style>
+        .SPXWindow {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        #gfx {
+            opacity: 0; /* animated */
+            position: absolute;
+            right: 3vw;
+            bottom: 8.5vh;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0;
+            filter: drop-shadow(0px 8px 20px rgba(0, 0, 0, 0.3));
+            pointer-events: auto;
+        }
+
+        /* Top Title Bar */
+        #topBar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 13vw;
+            height: 4.8vh;
+            padding: 0.2vw 1.2vw;
+            box-sizing: border-box;
+
+            /* Straight rectangular edges as requested */
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+
+            /* Theme overrides with dark slate gray fallback */
+            background: var(--theme-iurd-top-bg, linear-gradient(to right, #444444, #2c2c2c));
+            color: var(--theme-iurd-top-text-color, #ffffff);
+            border-bottom: 0.1vw solid rgba(255, 255, 255, 0.1);
+        }
+
+        #topText {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.1vw;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            line-height: 1;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Bottom QR Content Bar (Taller height to pass above the main text GC structure) */
+        #bottomBar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 13vw;
+            height: 13.5vh;
+            padding: 0.4vw 1.2vw;
+            box-sizing: border-box;
+
+            /* Straight rectangular edges as requested */
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+
+            /* Bottom accent stripe using theme brand color */
+            border-bottom: var(--theme-accent-width, 0.4vw) solid var(--theme-brandColor, #cc0000);
+
+            /* Theme overrides with light silver gradient fallback */
+            background: var(--theme-iurd-bottom-bg, linear-gradient(to bottom, #eaeaea 0%, #dcdcdc 100%));
+        }
+
+        #qrContainer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #qrImg {
+            max-height: 11.5vh;
+            max-width: 11vw;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.15));
+        }
+    </style>
+
+    <script>
+        let clipNone = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
+        let clipEast = "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)";
+
+        function runTemplateUpdate() {
+            // Apply visual theme
+            e('DynamicTheme').href = e('f99').innerText;
+
+            // Update label
+            e('topText').innerHTML = htmlDecode(e('f0').innerText);
+
+            // Update QR Code image source
+            let qrPath = e('f1').innerText.trim();
+            if (qrPath && qrPath !== 'none' && qrPath !== '') {
+                e('qrImg').src = qrPath;
+                e('qrImg').style.display = 'block';
+            } else {
+                e('qrImg').style.display = 'none';
+            }
+
+            setTimeout(runAnimationIN, 50);
+        }
+
+        function runAnimationIN() {
+            var timelineIn = anime.timeline({
+                easing: 'easeOutCubic',
+                duration: 600
+            });
+
+            anime.set('#topBar', { clipPath: clipEast });
+            anime.set('#bottomBar', { clipPath: clipEast });
+
+            timelineIn
+            .add({
+                targets: ['#gfx'],
+                opacity: [0, 1],
+                duration: 50,
+                easing: 'linear'
+            }, 0)
+            .add({
+                targets: ['#topBar'],
+                duration: 450,
+                clipPath: [clipEast, clipNone],
+                translateX: ['30%', '0%']
+            }, 50)
+            .add({
+                targets: ['#bottomBar'],
+                duration: 500,
+                clipPath: [clipEast, clipNone],
+                translateX: ['30%', '0%']
+            }, 120)
+            .add({
+                targets: ['#qrImg', '#topText'],
+                opacity: [0, 1],
+                scale: [0.85, 1],
+                duration: 350
+            }, 250);
+        }
+
+        function runAnimationOUT() {
+            var timelineOut = anime.timeline({
+                easing: 'easeInCubic',
+                duration: 450
+            });
+
+            let collapseClip = "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)";
+
+            timelineOut
+            .add({
+                targets: ['#qrImg', '#topText'],
+                opacity: [1, 0],
+                scale: [1, 0.9],
+                duration: 150
+            }, 0)
+            .add({
+                targets: ['#bottomBar'],
+                duration: 300,
+                clipPath: collapseClip,
+                translateX: ['0%', '20%']
+            }, 50)
+            .add({
+                targets: ['#topBar'],
+                duration: 300,
+                clipPath: collapseClip,
+                translateX: ['0%', '20%']
+            }, 100)
+            .add({
+                targets: ['#gfx'],
+                opacity: 0,
+                duration: 50,
+                easing: 'linear'
+            }, 350);
+        }
+
+        // Define definition for SPX importer
+        window.SPXGCTemplateDefinition = {
+            "description": "IURD QR Code",
+            "playserver": "OVERLAY",
+            "playchannel": "1",
+            "playlayer": "5",
+            "webplayout": "5",
+            "out": "manual",
+            "dataformat": "json",
+            "uicolor": "3",
+            "DataFields": [
+                {
+                    "ftype": "instruction",
+                    "value": "Configure o QR Code. O elemento se posiciona à direita da tela, alinhando-se perfeitamente com os GCs de Texto."
+                },
+                {
+                    "field": "f0",
+                    "ftype": "textfield",
+                    "title": "Título do QR Code",
+                    "value": "DOE AQUI"
+                },
+                {
+                    "field": "f1",
+                    "ftype": "filelist",
+                    "title": "Imagem do QR Code",
+                    "assetfolder": "/media/images/",
+                    "extension": "png",
+                    "value": ""
+                },
+                {
+                    "field": "f99",
+                    "ftype": "filelist",
+                    "title": "Visual theme",
+                    "assetfolder": "./themes/",
+                    "extension": "css",
+                    "value": "./themes/Default.css"
+                }
+            ]
+        };
+    </script>
+</head>
+<body>
+    <div class="SPXWindow">
+        <div id="gfx">
+            <div id="topBar">
+                <span id="topText">DOE AQUI</span>
+            </div>
+            <div id="bottomBar">
+                <div id="qrContainer">
+                    <img id="qrImg" alt="QR Code" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="hiddenSpxData" style="display:none;">
+        <div id="f0"></div>
+        <div id="f1"></div>
+        <div id="f99"></div>
+    </div>
+</body>
+</html>

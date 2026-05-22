@@ -1,0 +1,94 @@
+:root {
+    /* Main Theme Variables */
+    --theme-brandColor: #e33b7b; /* Rose Quartz Gold */
+    --theme-lite-color: #fff2f6; /* Rose Pearl */
+    --theme-dark-color: #2b0d18; /* Deep Plum/Burgundy */
+    --theme-tickerBack: #1c070f; /* Deep Crimson-Plum */
+
+    --theme-accent-width: 0.5vw;
+
+    /* IURD GC Logo Custom Styling */
+    --theme-iurd-logo-bg: linear-gradient(
+        135deg, 
+        #f78da7 0%, 
+        #ffcbd7 25%, 
+        #d14972 50%, 
+        #a3244d 75%, 
+        #f78da7 100%
+    ); /* Metallic rose-gold gradient with reflective pink bands */
+    
+    --theme-iurd-logo-text-bg: linear-gradient(
+        to bottom, 
+        #ffffff 0%, 
+        #ffe8ee 45%, 
+        #ffb6c8 50%, 
+        #ffd2dd 55%, 
+        #ffffff 100%
+    ); /* Glossy rose-chrome look for logo text */
+
+    /* IURD GC Text Custom Styling */
+    --theme-iurd-top-bg: linear-gradient(
+        to right, 
+        #3b1021 0%, 
+        #1d0710 50%, 
+        #0e0207 100%
+    ); /* Deep rich plum to burgundy gradient */
+    
+    --theme-iurd-top-text-color: #fdfaf2; /* Soft ivory white */
+
+    --theme-iurd-bottom-bg: linear-gradient(
+        to bottom, 
+        #ffffff 0%, 
+        #fff0f3 50%, 
+        #fce2e8 100%
+    ); /* Rose pearl metallic gradient */
+    
+    --theme-iurd-bottom-text-color: #2b0d18; /* Deep plum burgundy text */
+}
+
+/* Custom visual styling enhancements for Quinta theme */
+#logoContainer {
+    box-shadow: 0 10px 30px rgba(59, 16, 33, 0.4);
+    filter: drop-shadow(0px 4px 15px rgba(227, 59, 123, 0.3)); /* Radiant rose halo glow */
+}
+
+#logoText {
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3)) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.25));
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background: var(--theme-iurd-logo-text-bg) !important;
+}
+
+#topBar {
+    border-bottom: 0.1vw solid rgba(227, 59, 123, 0.4); /* Subtle rose-gold separator */
+}
+
+#bottomBar {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* IURD Ticker Custom Styling for Quinta theme */
+#tickerHeadline {
+    background: var(--theme-brandColor, #e33b7b) !important;
+    color: #ffffff !important; /* White contrast */
+}
+
+#headlineText {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+#tickerBody {
+    background: var(--theme-tickerBack, #1c070f) !important;
+    border-bottom: 0.35vw solid var(--theme-brandColor, #e33b7b) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ticker-span {
+    color: var(--theme-lite-color, #fff2f6) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.ticker-separator {
+    color: var(--theme-brandColor, #e33b7b) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}

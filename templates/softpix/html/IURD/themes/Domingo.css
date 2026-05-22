@@ -1,0 +1,94 @@
+:root {
+    /* Main Theme Variables */
+    --theme-brandColor: #cc0909; /* Cathedral Ruby Red */
+    --theme-lite-color: #f5f6f8; /* Crisp Platinum */
+    --theme-dark-color: #1a0505; /* Deep Cherry Black */
+    --theme-tickerBack: #0d0303; /* Obsidian Cherry */
+
+    --theme-accent-width: 0.5vw;
+
+    /* IURD GC Logo Custom Styling */
+    --theme-iurd-logo-bg: linear-gradient(
+        135deg, 
+        #e62121 0%, 
+        #ff5252 25%, 
+        #b80707 50%, 
+        #800000 75%, 
+        #e62121 100%
+    ); /* Metallic ruby-red gradient with dynamic light bands */
+    
+    --theme-iurd-logo-text-bg: linear-gradient(
+        to bottom, 
+        #ffffff 0%, 
+        #e0e0e0 45%, 
+        #b0b0b0 50%, 
+        #eaeaea 55%, 
+        #ffffff 100%
+    ); /* Chrome polished silver for high-contrast over red */
+
+    /* IURD GC Text Custom Styling */
+    --theme-iurd-top-bg: linear-gradient(
+        to right, 
+        #240505 0%, 
+        #150202 50%, 
+        #0d0101 100%
+    ); /* Deep burgundy to black gradient */
+    
+    --theme-iurd-top-text-color: #fdfaf2; /* Soft ivory white */
+
+    --theme-iurd-bottom-bg: linear-gradient(
+        to bottom, 
+        #ffffff 0%, 
+        #f4f5f7 50%, 
+        #e1e3e8 100%
+    ); /* Crisp platinum-silver metallic gradient */
+    
+    --theme-iurd-bottom-text-color: #1c0505; /* Deep cherry black text */
+}
+
+/* Custom visual styling enhancements for Domingo theme */
+#logoContainer {
+    box-shadow: 0 10px 30px rgba(36, 5, 5, 0.4);
+    filter: drop-shadow(0px 4px 15px rgba(204, 9, 9, 0.3)); /* Radiant ruby halo glow */
+}
+
+#logoText {
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.4)) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.3));
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background: var(--theme-iurd-logo-text-bg) !important;
+}
+
+#topBar {
+    border-bottom: 0.1vw solid rgba(204, 9, 9, 0.4); /* Subtle ruby red separator */
+}
+
+#bottomBar {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* IURD Ticker Custom Styling for Domingo theme */
+#tickerHeadline {
+    background: var(--theme-brandColor, #cc0909) !important;
+    color: #ffffff !important; /* White contrast */
+}
+
+#headlineText {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+#tickerBody {
+    background: var(--theme-tickerBack, #0d0303) !important;
+    border-bottom: 0.35vw solid var(--theme-brandColor, #cc0909) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ticker-span {
+    color: var(--theme-lite-color, #f5f6f8) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.ticker-separator {
+    color: var(--theme-brandColor, #cc0909) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}

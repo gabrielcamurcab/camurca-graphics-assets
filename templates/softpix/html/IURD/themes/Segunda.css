@@ -1,0 +1,94 @@
+:root {
+    /* Main Theme Variables */
+    --theme-brandColor: #1b52e0; /* Celestial Sapphire Blue */
+    --theme-lite-color: #f0f4ff; /* Ice Platinum */
+    --theme-dark-color: #0a122c; /* Deep Midnight Navy */
+    --theme-tickerBack: #040817; /* Obsidian Midnight Navy */
+
+    --theme-accent-width: 0.5vw;
+
+    /* IURD GC Logo Custom Styling */
+    --theme-iurd-logo-bg: linear-gradient(
+        135deg, 
+        #2b70f5 0%, 
+        #5e96ff 25%, 
+        #1545ad 50%, 
+        #0c2b73 75%, 
+        #2b70f5 100%
+    ); /* Metallic sapphire-blue gradient with dynamic light bands */
+    
+    --theme-iurd-logo-text-bg: linear-gradient(
+        to bottom, 
+        #ffffff 0%, 
+        #e5edff 45%, 
+        #adc7ff 50%, 
+        #d1e0ff 55%, 
+        #ffffff 100%
+    ); /* Glossy ice-chrome look for logo text */
+
+    /* IURD GC Text Custom Styling */
+    --theme-iurd-top-bg: linear-gradient(
+        to right, 
+        #0d1733 0%, 
+        #080e22 50%, 
+        #03050c 100%
+    ); /* Rich navy midnight gradient */
+    
+    --theme-iurd-top-text-color: #fdfaf2; /* Soft ivory white */
+
+    --theme-iurd-bottom-bg: linear-gradient(
+        to bottom, 
+        #ffffff 0%, 
+        #f2f5fb 50%, 
+        #deeafe 100%
+    ); /* Cold pearl ice gradient */
+    
+    --theme-iurd-bottom-text-color: #0a122c; /* Deep navy text */
+}
+
+/* Custom visual styling enhancements for Segunda theme */
+#logoContainer {
+    box-shadow: 0 10px 30px rgba(10, 18, 44, 0.4);
+    filter: drop-shadow(0px 4px 15px rgba(27, 82, 224, 0.3)); /* Vibrant sapphire halo glow */
+}
+
+#logoText {
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3)) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.25));
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background: var(--theme-iurd-logo-text-bg) !important;
+}
+
+#topBar {
+    border-bottom: 0.1vw solid rgba(27, 82, 224, 0.4); /* Subtle sapphire blue separator */
+}
+
+#bottomBar {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* IURD Ticker Custom Styling for Segunda theme */
+#tickerHeadline {
+    background: var(--theme-brandColor, #1b52e0) !important;
+    color: #ffffff !important; /* White contrast */
+}
+
+#headlineText {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+#tickerBody {
+    background: var(--theme-tickerBack, #040817) !important;
+    border-bottom: 0.35vw solid var(--theme-brandColor, #1b52e0) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ticker-span {
+    color: var(--theme-lite-color, #f0f4ff) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.ticker-separator {
+    color: var(--theme-brandColor, #1b52e0) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}

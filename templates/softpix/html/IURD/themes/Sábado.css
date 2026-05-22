@@ -1,0 +1,94 @@
+:root {
+    /* Main Theme Variables */
+    --theme-brandColor: #8c583c; /* Rich Cedar/Bronze Brown */
+    --theme-lite-color: #f7f2ed; /* Soft Linen */
+    --theme-dark-color: #24160e; /* Deep Espresso Cocoa */
+    --theme-tickerBack: #140c08; /* Obsidian Cocoa */
+
+    --theme-accent-width: 0.5vw;
+
+    /* IURD GC Logo Custom Styling */
+    --theme-iurd-logo-bg: linear-gradient(
+        135deg, 
+        #cf9878 0%, 
+        #ecc8b3 25%, 
+        #9b5a37 50%, 
+        #703b1e 75%, 
+        #cf9878 100%
+    ); /* Metallic bronze/copper gradient with dynamic light reflections */
+    
+    --theme-iurd-logo-text-bg: linear-gradient(
+        to bottom, 
+        #2b1a10 0%, 
+        #150c07 45%, 
+        #050201 50%, 
+        #150c07 55%, 
+        #2b1a10 100%
+    ); /* Glossy espresso brown look for logo text */
+
+    /* IURD GC Text Custom Styling */
+    --theme-iurd-top-bg: linear-gradient(
+        to right, 
+        #2b1a10 0%, 
+        #180e09 50%, 
+        #0c0704 100%
+    ); /* Warm roasted coffee/cocoa gradient */
+    
+    --theme-iurd-top-text-color: #fdfaf2; /* Soft ivory white */
+
+    --theme-iurd-bottom-bg: linear-gradient(
+        to bottom, 
+        #fdfbfa 0%, 
+        #f6ebe3 50%, 
+        #e8d5c8 100%
+    ); /* Warm linen metallic gradient with soft copper hues */
+    
+    --theme-iurd-bottom-text-color: #211309; /* Deep cedar brown text */
+}
+
+/* Custom visual styling enhancements for Sabado theme */
+#logoContainer {
+    box-shadow: 0 10px 30px rgba(43, 26, 16, 0.4);
+    filter: drop-shadow(0px 4px 15px rgba(140, 88, 60, 0.3)); /* Warm bronze halo glow */
+}
+
+#logoText {
+    filter: drop-shadow(1px 1px 1px rgba(255, 255, 255, 0.5)) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.4));
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background: var(--theme-iurd-logo-text-bg) !important;
+}
+
+#topBar {
+    border-bottom: 0.1vw solid rgba(140, 88, 60, 0.4); /* Subtle copper separator line */
+}
+
+#bottomBar {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* IURD Ticker Custom Styling for Sabado theme */
+#tickerHeadline {
+    background: var(--theme-brandColor, #8c583c) !important;
+    color: #f7f2ed !important; /* Linen contrast */
+}
+
+#headlineText {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+#tickerBody {
+    background: var(--theme-tickerBack, #140c08) !important;
+    border-bottom: 0.35vw solid var(--theme-brandColor, #8c583c) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ticker-span {
+    color: var(--theme-lite-color, #f7f2ed) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.ticker-separator {
+    color: var(--theme-brandColor, #8c583c) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}

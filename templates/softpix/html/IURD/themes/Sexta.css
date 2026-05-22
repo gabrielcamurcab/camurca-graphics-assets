@@ -1,0 +1,96 @@
+:root {
+    /* Main Theme Variables */
+    --theme-brandColor: #333333; /* Matte Obsidian Carbon */
+    --theme-lite-color: #f0f0f0; /* Silver White */
+    --theme-dark-color: #0a0a0a; /* Jet Vantablack */
+    --theme-tickerBack: #050505; /* Pure Obsidian Black */
+
+    --theme-accent-width: 0.5vw;
+
+    /* IURD GC Logo Custom Styling */
+    --theme-iurd-logo-bg: linear-gradient(
+        135deg, 
+        #555555 0%, 
+        #888888 25%, 
+        #222222 50%, 
+        #0a0a0a 75%, 
+        #555555 100%
+    ); /* Carbon fiber brushed onyx metal gradient */
+    
+    --theme-iurd-logo-text-bg: linear-gradient(
+        to bottom, 
+        #ffffff 0%, 
+        #e1e1e1 45%, 
+        #9c9c9c 50%, 
+        #d1d1d1 55%, 
+        #ffffff 100%
+    ); /* High-contrast glossy chrome for logo text */
+
+    /* IURD GC Text Custom Styling */
+    --theme-iurd-top-bg: linear-gradient(
+        to right, 
+        #151515 0%, 
+        #090909 50%, 
+        #020202 100%
+    ); /* Jet black carbon gradient */
+    
+    --theme-iurd-top-text-color: #ffffff; /* Crisp white */
+
+    --theme-iurd-bottom-bg: linear-gradient(
+        to bottom, 
+        #ffffff 0%, 
+        #eaeaea 50%, 
+        #cccccc 100%
+    ); /* Polished chrome-silver metallic gradient */
+    
+    --theme-iurd-bottom-text-color: #080808; /* Absolute black text */
+}
+
+/* Custom visual styling enhancements for Sexta theme */
+#logoContainer {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    border: 0.1vw solid rgba(255, 255, 255, 0.08); /* Premium thin silver border */
+    filter: drop-shadow(0px 4px 15px rgba(255, 255, 255, 0.1)); /* Polished silver glow halo */
+}
+
+#logoText {
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.6)) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.5));
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background: var(--theme-iurd-logo-text-bg) !important;
+}
+
+#topBar {
+    border-bottom: 0.1vw solid rgba(255, 255, 255, 0.1); /* Crisp carbon separator */
+}
+
+#bottomBar {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* IURD Ticker Custom Styling for Sexta theme */
+#tickerHeadline {
+    background: var(--theme-brandColor, #333333) !important;
+    color: #ffffff !important; /* Silver white contrast */
+    border-right: 0.1vw solid rgba(255, 255, 255, 0.1);
+}
+
+#headlineText {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6) !important;
+}
+
+#tickerBody {
+    background: var(--theme-tickerBack, #050505) !important;
+    border-bottom: 0.35vw solid var(--theme-brandColor, #333333) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+.ticker-span {
+    color: var(--theme-lite-color, #f0f0f0) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.ticker-separator {
+    color: #888888 !important; /* Steel silver separator */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}

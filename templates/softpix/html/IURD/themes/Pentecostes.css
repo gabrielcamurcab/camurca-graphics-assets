@@ -1,0 +1,92 @@
+:root {
+    /* Main Theme Variables */
+    --theme-brandColor: #dca842; /* Premium warm amber-gold */
+    --theme-lite-color: #f4ebd2; /* Soft warm cream */
+    --theme-dark-color: #251c1a; /* Warm espresso brown */
+    --theme-tickerBack: #150f0e; /* Deep charcoal sepia */
+
+    --theme-accent-width: 0.5vw;
+
+    /* IURD GC Logo Custom Styling */
+    --theme-iurd-logo-bg: linear-gradient(
+        135deg, 
+        #ecd699 0%, 
+        #f7e7c4 25%, 
+        #c19f55 50%, 
+        #a67c37 75%, 
+        #ecd699 100%
+    ); /* Metallic champagne-gold gradient with dynamic light bands */
+    
+    --theme-iurd-logo-text-bg: linear-gradient(
+        to bottom, 
+        #2b1f1d 0%, 
+        #150f0e 45%, 
+        #050303 50%, 
+        #150f0e 55%, 
+        #2b1f1d 100%
+    ); /* Espresso-to-black glossy 3D look for logo text */
+
+    /* IURD GC Text Custom Styling */
+    --theme-iurd-top-bg: linear-gradient(
+        to right, 
+        #2b1f1d 0%, 
+        #1d1413 50%, 
+        #150f0e 100%
+    ); /* Warm deep sepia/espresso gradient matching the Pentecost background */
+    
+    --theme-iurd-top-text-color: #fdfaf2; /* Soft ivory white for ultra-premium legibility */
+
+    --theme-iurd-bottom-bg: linear-gradient(
+        to bottom, 
+        #fdfaf2 0%, 
+        #f5edd7 50%, 
+        #e5d6b4 100%
+    ); /* Creamy ivory metallic gradient for high contrast text readability */
+    
+    --theme-iurd-bottom-text-color: #211513; /* Rich dark brown text color */
+}
+
+/* Custom visual styling enhancements for the Pentecostes theme */
+#logoContainer {
+    box-shadow: 0 10px 30px rgba(43, 31, 29, 0.4);
+    filter: drop-shadow(0px 4px 15px rgba(220, 168, 66, 0.25)); /* Warm golden halo glow */
+}
+
+#logoText {
+    filter: drop-shadow(1px 1px 1px rgba(255, 255, 255, 0.5)) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+#topBar {
+    border-bottom: 0.1vw solid rgba(220, 168, 66, 0.3); /* Subtle golden separator line */
+}
+
+#bottomBar {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* IURD Ticker Custom Styling for Pentecostes theme */
+#tickerHeadline {
+    background: var(--theme-brandColor, #dca842) !important;
+    color: #211513 !important; /* Rich espresso brown for contrast */
+}
+
+#headlineText {
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.45) !important;
+}
+
+#tickerBody {
+    background: var(--theme-tickerBack, #150f0e) !important;
+    border-bottom: 0.35vw solid var(--theme-brandColor, #dca842) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ticker-span {
+    color: var(--theme-lite-color, #f4ebd2) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.ticker-separator {
+    color: var(--theme-brandColor, #dca842) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+

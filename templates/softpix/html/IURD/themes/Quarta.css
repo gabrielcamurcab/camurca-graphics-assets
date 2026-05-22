@@ -1,0 +1,94 @@
+:root {
+    /* Main Theme Variables */
+    --theme-brandColor: #d4af37; /* Imperial Gold */
+    --theme-lite-color: #fffbf0; /* Soft Golden Ivory */
+    --theme-dark-color: #2a1e05; /* Sandalwood/Espresso Gold */
+    --theme-tickerBack: #171002; /* Deep Obsidian Amber */
+
+    --theme-accent-width: 0.5vw;
+
+    /* IURD GC Logo Custom Styling */
+    --theme-iurd-logo-bg: linear-gradient(
+        135deg, 
+        #fae29c 0%, 
+        #fff3d1 25%, 
+        #c59e3f 50%, 
+        #9e7520 75%, 
+        #fae29c 100%
+    ); /* Ultra-metallic reflective gold with bright gold bands */
+    
+    --theme-iurd-logo-text-bg: linear-gradient(
+        to bottom, 
+        #302004 0%, 
+        #191001 45%, 
+        #0a0600 50%, 
+        #191001 55%, 
+        #302004 100%
+    ); /* Liquid glossy gold look for logo text */
+
+    /* IURD GC Text Custom Styling */
+    --theme-iurd-top-bg: linear-gradient(
+        to right, 
+        #302004 0%, 
+        #1c1302 50%, 
+        #0e0a01 100%
+    ); /* Deep amber gold to espresso black gradient */
+    
+    --theme-iurd-top-text-color: #fdfaf2; /* Soft ivory white */
+
+    --theme-iurd-bottom-bg: linear-gradient(
+        to bottom, 
+        #fffcf5 0%, 
+        #fcf4de 50%, 
+        #f2e3be 100%
+    ); /* Smooth creamy gold metallic gradient */
+    
+    --theme-iurd-bottom-text-color: #211503; /* Deep sandalwood text */
+}
+
+/* Custom visual styling enhancements for Quarta theme */
+#logoContainer {
+    box-shadow: 0 10px 30px rgba(48, 32, 4, 0.4);
+    filter: drop-shadow(0px 4px 15px rgba(212, 175, 55, 0.3)); /* Radiant golden halo glow */
+}
+
+#logoText {
+    filter: drop-shadow(1px 1px 1px rgba(255, 255, 255, 0.6)) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.4));
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background: var(--theme-iurd-logo-text-bg) !important;
+}
+
+#topBar {
+    border-bottom: 0.1vw solid rgba(212, 175, 55, 0.4); /* Subtle golden separator line */
+}
+
+#bottomBar {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* IURD Ticker Custom Styling for Quarta theme */
+#tickerHeadline {
+    background: var(--theme-brandColor, #d4af37) !important;
+    color: #211503 !important; /* Rich espresso gold for contrast */
+}
+
+#headlineText {
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.45) !important;
+}
+
+#tickerBody {
+    background: var(--theme-tickerBack, #171002) !important;
+    border-bottom: 0.35vw solid var(--theme-brandColor, #d4af37) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ticker-span {
+    color: var(--theme-lite-color, #fffbf0) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.ticker-separator {
+    color: var(--theme-brandColor, #d4af37) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>IURD TEXT</title>
+    <script type="text/javascript" src="js/lib/anime.min.js"></script>
+    <script type="text/javascript" src="js/spx_interface.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <link rel="stylesheet" type="text/css" id="DynamicTheme" href="themes/Default.css" />
+    <style>
+        .SPXWindow {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            position: absolute;
+        }
+
+        #gfx {
+            opacity: 0; /* animated */
+            z-index: 10;
+            bottom: 8.5vh;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+            transition: left 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0px 8px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        #gfx.with-logo {
+            left: 16.3vw;
+        }
+
+        #gfx.no-logo {
+            left: 3vw;
+        }
+
+        /* Top dark bar */
+        #topBar {
+            display: inline-flex;
+            align-items: center;
+            height: 4.8vh;
+            padding: 0.2vw 2.5vw 0.2vw 2.5vw;
+            
+            /* Slanted left edge */
+            clip-path: polygon(2.2vw 0%, 100% 0%, 100% 100%, 0% 100%);
+            
+            /* Theme overrides with dark slate gray fallback */
+            background: var(--theme-iurd-top-bg, var(--theme-dark-color, linear-gradient(to right, #444444, #2c2c2c)));
+            color: var(--theme-iurd-top-text-color, #ffffff);
+        }
+
+        #gfx.with-logo #topBar {
+            margin-left: -10.8vw;
+            padding-left: 13.3vw; /* original padding 2.5vw + 10.8vw = 13.3vw */
+        }
+
+        #topText {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.6vw;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            line-height: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Bottom main message bar */
+        #bottomBar {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 68vw;
+            max-width: 78vw;
+            height: 11vh;
+            padding: 0.4vw 3vw 0.4vw 3.5vw;
+            gap: 0.2vw;
+            
+            /* Slanted left edge */
+            clip-path: polygon(2.2vw 0%, 100% 0%, 100% 100%, 0% 100%);
+            
+            /* Bottom accent stripe using theme brand color */
+            border-bottom: var(--theme-accent-width, 0.4vw) solid var(--theme-brandColor, #267617);
+            
+            /* Theme overrides with light silver gradient fallback */
+            background: var(--theme-iurd-bottom-bg, linear-gradient(to bottom, #eaeaea 0%, #dcdcdc 50%, #c8c8c8 100%));
+            color: var(--theme-iurd-bottom-text-color, #1a1a1a);
+        }
+
+        .bottom-line {
+            display: block;
+            overflow: hidden;
+            height: 4vh;
+            line-height: 4vh;
+        }
+
+        /* Premium heavy uppercase dark message text */
+        .bottom-text {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 2.1vw;
+            font-weight: 900;
+            letter-spacing: -0.01em;
+            display: inline-block;
+            white-space: nowrap;
+            color: inherit;
+        }
+
+        #line2Container {
+            height: 3.5vh;
+            line-height: 3.5vh;
+        }
+
+        #line2Text {
+            font-size: 1.8vw;
+            font-weight: 700;
+            opacity: 0.9;
+        }
+    </style>
+
+    <script>
+        let clipNone = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
+        let clipEast = "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)";
+
+        function runTemplateUpdate() {
+            // Apply visual theme from dropdown
+            e('DynamicTheme').href = e('f99').innerText;
+
+            // Update texts
+            e('topText').innerHTML = htmlDecode(e('f0').innerText);
+            e('line1Text').innerHTML = htmlDecode(e('f1').innerText);
+            e('line2Text').innerHTML = htmlDecode(e('f2').innerText);
+
+            // Handle space for logo
+            let layoutMode = e('f3').innerText.trim();
+            if (layoutMode === 'no-logo') {
+                e('gfx').className = 'no-logo';
+            } else {
+                e('gfx').className = 'with-logo';
+            }
+
+            // Show / hide fields dynamically if empty
+            if (e('f0').innerText.trim() === '') {
+                e('topBar').style.display = 'none';
+            } else {
+                e('topBar').style.display = 'inline-flex';
+            }
+
+            if (e('f2').innerText.trim() === '') {
+                e('line2Container').style.display = 'none';
+                e('bottomBar').style.height = '7vh';
+            } else {
+                e('line2Container').style.display = 'block';
+                e('bottomBar').style.height = '11vh';
+            }
+
+            setTimeout(runAnimationIN, 50);
+        }
+
+        function runAnimationIN() {
+            var timelineIn = anime.timeline({
+                easing: 'easeOutCubic',
+                duration: 600
+            });
+
+            // Initial states
+            anime.set('#topBar', { clipPath: clipEast });
+            anime.set('#bottomBar', { clipPath: clipEast });
+
+            let finalTopClip = "polygon(2.2vw 0%, 100% 0%, 100% 100%, 0% 100%)";
+            let finalBottomClip = "polygon(2.2vw 0%, 100% 0%, 100% 100%, 0% 100%)";
+
+            timelineIn
+            .add({
+                targets: ['#gfx'],
+                opacity: [0, 1],
+                duration: 50,
+                easing: 'linear'
+            }, 0)
+            .add({
+                targets: ['#topBar'],
+                duration: 400,
+                clipPath: [clipEast, finalTopClip]
+            }, 50)
+            .add({
+                targets: ['#topText'],
+                opacity: [0, 1],
+                translateX: ['20%', '0%'],
+                duration: 450
+            }, 100)
+            .add({
+                targets: ['#bottomBar'],
+                duration: 500,
+                clipPath: [clipEast, finalBottomClip]
+            }, 150)
+            .add({
+                targets: ['#line1Text', '#line2Text'],
+                opacity: [0, 1],
+                translateY: ['50%', '0%'],
+                duration: 450,
+                delay: anime.stagger(100)
+            }, 250);
+        }
+
+        function runAnimationOUT() {
+            var timelineOut = anime.timeline({
+                easing: 'easeInCubic',
+                duration: 500
+            });
+
+            let collapseTopClip = "polygon(2.2vw 0%, 2.2vw 0%, 0% 100%, 0% 100%)";
+            let collapseBottomClip = "polygon(2.2vw 0%, 2.2vw 0%, 0% 100%, 0% 100%)";
+
+            timelineOut
+            .add({
+                targets: ['#line1Text', '#line2Text'],
+                opacity: [1, 0],
+                translateY: ['0%', '40%'],
+                duration: 200,
+                delay: anime.stagger(50)
+            }, 0)
+            .add({
+                targets: ['#topText'],
+                opacity: [1, 0],
+                translateX: ['0%', '20%'],
+                duration: 200
+            }, 50)
+            .add({
+                targets: ['#bottomBar'],
+                duration: 350,
+                clipPath: collapseBottomClip
+            }, 100)
+            .add({
+                targets: ['#topBar'],
+                duration: 300,
+                clipPath: collapseTopClip
+            }, 150)
+            .add({
+                targets: ['#gfx'],
+                opacity: 0,
+                duration: 50,
+                easing: 'linear'
+            }, 450);
+        }
+
+        // Define definition for SPX importer
+        window.SPXGCTemplateDefinition = {
+            "description": "IURD Text Strap",
+            "playserver": "OVERLAY",
+            "playchannel": "1",
+            "playlayer": "3",
+            "webplayout": "3",
+            "out": "manual",
+            "dataformat": "json",
+            "uicolor": "3",
+            "DataFields": [
+                {
+                    "ftype": "instruction",
+                    "value": "Configure os textos das barras de informação da IURD. Escolha a opção de recuo se for exibir junto com a Logo."
+                },
+                {
+                    "field": "f0",
+                    "ftype": "textfield",
+                    "title": "Título (Faixa Superior)",
+                    "value": "VOCÊ QUE SOFRE COM UM FAMILIAR NOS VÍCIOS"
+                },
+                {
+                    "field": "f1",
+                    "ftype": "textfield",
+                    "title": "Mensagem - Linha 1",
+                    "value": "LIGUE: (85) 3211-6011 OU WHATSAPP: (11) 3573-3500"
+                },
+                {
+                    "field": "f2",
+                    "ftype": "textfield",
+                    "title": "Mensagem - Linha 2",
+                    "value": "E ADICIONE AOS SEUS CONTATOS"
+                },
+                {
+                    "field": "f3",
+                    "ftype": "dropdown",
+                    "title": "Espaço da Logo",
+                    "value": "with-logo",
+                    "items": [
+                        {
+                            "text": "Com Logo (Recuado à Esquerda)",
+                            "value": "with-logo"
+                        },
+                        {
+                            "text": "Sem Logo (Totalmente à Esquerda)",
+                            "value": "no-logo"
+                        }
+                    ]
+                },
+                {
+                    "field": "f99",
+                    "ftype": "filelist",
+                    "title": "Visual theme",
+                    "assetfolder": "./themes/",
+                    "extension": "css",
+                    "value": "./themes/Default.css"
+                }
+            ]
+        };
+    </script>
+</head>
+<body>
+    <div class="SPXWindow left">
+        <div id="gfx" class="with-logo">
+            <div id="topBar">
+                <span id="topText"></span>
+            </div>
+            <div id="bottomBar">
+                <div class="bottom-line">
+                    <span id="line1Text" class="bottom-text"></span>
+                </div>
+                <div class="bottom-line" id="line2Container">
+                    <span id="line2Text" class="bottom-text"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="hiddenSpxData" style="display:none;">
+        <div id="f0"></div>
+        <div id="f1"></div>
+        <div id="f2"></div>
+        <div id="f3"></div>
+        <div id="f99"></div>
+    </div>
+</body>
+</html>
