@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>IURD L-BAR SIDEBAR</title>
+    <script type="text/javascript" src="js/lib/anime.min.js"></script>
+    <script type="text/javascript" src="js/spx_interface.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <link rel="stylesheet" type="text/css" id="DynamicTheme" href="themes/Default.css" />
+    <style>
+        .SPXWindow {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        #lbarContainer {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 25vw;
+            height: 100vh;
+            
+            /* Sincronizado com os tons escuros do tema */
+            background: linear-gradient(to bottom, 
+                var(--theme-dark-color, #1a0505) 0%, 
+                var(--theme-tickerBack, #0d0303) 100%
+            ) !important;
+            
+            border-right: var(--theme-accent-width, 0.4vw) solid var(--theme-brandColor, #cc0909);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            padding: 6vh 2vw 4vh 2vw;
+            justify-content: flex-start;
+            gap: 4vh;
+            box-shadow: 10px 0px 30px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(15px);
+            opacity: 0.97;
+            transform: translateX(-100%); /* animado */
+            pointer-events: auto;
+        }
+
+        /* Slanted metallic header */
+        #headerBox {
+            width: 100%;
+            height: 7.5vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(0% 0%, 100% 0%, calc(100% - 2.2vw) 100%, 0% 100%);
+            
+            /* Logo metallic background of the theme */
+            background: var(--theme-iurd-logo-bg, linear-gradient(135deg, #e62121 0%, #ff5252 25%, #b80707 50%, #800000 75%, #e62121 100%));
+            border-left: var(--theme-accent-width, 0.4vw) solid var(--theme-brandColor, #cc0909);
+            box-sizing: border-box;
+            padding-right: 2vw;
+            filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        #headerText {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.7vw;
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            line-height: 1;
+            background: var(--theme-iurd-logo-text-bg, linear-gradient(to bottom, #888888 0%, #333333 45%, #111111 50%, #444444 55%, #666666 100%));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(1px 1px 1px rgba(255, 255, 255, 0.7));
+            display: inline-block;
+        }
+
+        /* Stacked Info Cards */
+        #cardsContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5vh;
+            width: 100%;
+        }
+
+        .info-card {
+            background: var(--theme-iurd-bottom-bg, linear-gradient(to bottom, #ffffff, #eaeaea));
+            color: var(--theme-iurd-bottom-text-color, #1c0505);
+            padding: 1.6vh 1.6vw;
+            border-left: 0.35vw solid var(--theme-brandColor, #cc0909);
+            border-radius: 0 0.8vw 0.8vw 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 0.6vh;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85vw;
+            font-weight: 700;
+            opacity: 0.75;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .card-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.35vw;
+            font-weight: 900;
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+        }
+
+        /* Bottom QR Code container */
+        #qrBox {
+            margin-top: auto; /* push to bottom of viewport */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5vh;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 2.2vh;
+            border-radius: 1vw;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            width: 100%;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        #qrTitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1vw;
+            font-weight: 700;
+            color: var(--theme-lite-color, #f5f6f8);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        #qrImage {
+            width: 8vw;
+            height: 8vw;
+            object-fit: contain;
+            border-radius: 0.5vw;
+            background: white;
+            padding: 0.6vw;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+
+    <script>
+        function runTemplateUpdate() {
+            // Apply theme
+            e('DynamicTheme').href = e('f99').innerText;
+
+            // Load header title
+            e('headerText').innerHTML = htmlDecode(e('f0').innerText);
+
+            // Update Card 1
+            e('c1Title').innerHTML = htmlDecode(e('f1').innerText);
+            e('c1Text').innerHTML = htmlDecode(e('f2').innerText);
+
+            // Update Card 2
+            e('c2Title').innerHTML = htmlDecode(e('f3').innerText);
+            e('c2Text').innerHTML = htmlDecode(e('f4').innerText);
+
+            // Update Card 3
+            e('c3Title').innerHTML = htmlDecode(e('f5').innerText);
+            e('c3Text').innerHTML = htmlDecode(e('f6').innerText);
+
+            // Update QR code title and image
+            e('qrTitle').innerHTML = htmlDecode(e('f7').innerText);
+            let qrPath = e('f8').innerText.trim();
+            if (qrPath && qrPath !== 'none' && qrPath !== '') {
+                e('qrImage').src = qrPath;
+                e('qrBox').style.display = 'flex';
+            } else {
+                e('qrBox').style.display = 'none';
+            }
+
+            // Handle empty cards visibility
+            toggleCardVisibility('c1Title', 'c1Text', 'card1');
+            toggleCardVisibility('c2Title', 'c2Text', 'card2');
+            toggleCardVisibility('c3Title', 'c3Text', 'card3');
+
+            setTimeout(runAnimationIN, 50);
+        }
+
+        function toggleCardVisibility(titleId, textId, cardId) {
+            let title = e(titleId).innerText.trim();
+            let text = e(textId).innerText.trim();
+            if (title === '' && text === '') {
+                e(cardId).style.display = 'none';
+            } else {
+                e(cardId).style.display = 'flex';
+            }
+        }
+
+        function runAnimationIN() {
+            var timelineIn = anime.timeline({
+                easing: 'easeOutCubic',
+                duration: 600
+            });
+
+            timelineIn
+            .add({
+                targets: ['#lbarContainer'],
+                translateX: ['-100%', '0%'],
+                duration: 500
+            }, 0)
+            .add({
+                targets: ['.info-card'],
+                opacity: [0, 1],
+                translateX: [-20, 0],
+                duration: 400,
+                delay: anime.stagger(120)
+            }, 250)
+            .add({
+                targets: ['#qrBox'],
+                opacity: [0, 1],
+                scale: [0.92, 1],
+                duration: 400
+            }, 450);
+        }
+
+        function runAnimationOUT() {
+            var timelineOut = anime.timeline({
+                easing: 'easeInCubic',
+                duration: 500
+            });
+
+            timelineOut
+            .add({
+                targets: ['#qrBox'],
+                opacity: [1, 0],
+                scale: [1, 0.95],
+                duration: 200
+            }, 0)
+            .add({
+                targets: ['.info-card'],
+                opacity: [1, 0],
+                translateX: [0, -20],
+                duration: 250,
+                delay: anime.stagger(50)
+            }, 50)
+            .add({
+                targets: ['#lbarContainer'],
+                translateX: ['0%', '-100%'],
+                duration: 400
+            }, 200);
+        }
+    </script>
+</head>
+<body>
+    <div class="SPXWindow">
+        <div id="lbarContainer">
+            <div id="headerBox">
+                <span id="headerText"></span>
+            </div>
+            
+            <div id="cardsContainer">
+                <div class="info-card" id="card1">
+                    <span class="card-title" id="c1Title"></span>
+                    <span class="card-text" id="c1Text"></span>
+                </div>
+                <div class="info-card" id="card2">
+                    <span class="card-title" id="c2Title"></span>
+                    <span class="card-text" id="c2Text"></span>
+                </div>
+                <div class="info-card" id="card3">
+                    <span class="card-title" id="c3Title"></span>
+                    <span class="card-text" id="c3Text"></span>
+                </div>
+            </div>
+
+            <div id="qrBox">
+                <span id="qrTitle"></span>
+                <img id="qrImage" alt="LBar QR Code" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden elements for SPX interface parameters -->
+    <div id="hiddenSpxData" style="display:none;">
+        <div id="f0"></div>
+        <div id="f1"></div>
+        <div id="f2"></div>
+        <div id="f3"></div>
+        <div id="f4"></div>
+        <div id="f5"></div>
+        <div id="f6"></div>
+        <div id="f7"></div>
+        <div id="f8"></div>
+        <div id="f99"></div>
+    </div>
+</body>
+</html>

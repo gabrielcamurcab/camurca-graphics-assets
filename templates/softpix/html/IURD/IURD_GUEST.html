@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>IURD GUEST STRAP</title>
+    <script type="text/javascript" src="js/lib/anime.min.js"></script>
+    <script type="text/javascript" src="js/spx_interface.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <link rel="stylesheet" type="text/css" id="DynamicTheme" href="themes/Default.css" />
+    <style>
+        .SPXWindow {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            position: absolute;
+        }
+
+        #gfx {
+            opacity: 0; /* animated */
+            z-index: 10;
+            bottom: 8.5vh;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+            transition: left 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0px 8px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        #gfx.with-logo {
+            left: 16.3vw;
+        }
+
+        #gfx.no-logo {
+            left: 3vw;
+        }
+
+        /* Top Bar: Guest Name */
+        #topBar {
+            display: inline-flex;
+            align-items: center;
+            height: 6.8vh;
+            padding: 0.2vw 3.5vw 0.2vw 3vw;
+            min-width: 25vw;
+            box-sizing: border-box;
+            
+            /* Slanted left edge */
+            clip-path: polygon(2.2vw 0%, 100% 0%, 100% 100%, 0% 100%);
+            
+            /* Theme overrides - metallic light gradient */
+            background: var(--theme-iurd-bottom-bg, linear-gradient(to bottom, #ffffff 0%, #f4f5f7 50%, #e1e3e8 100%));
+            color: var(--theme-iurd-bottom-text-color, #1c0505);
+            border-bottom: 0.1vw solid rgba(0, 0, 0, 0.1);
+        }
+
+        #gfx.with-logo #topBar {
+            margin-left: -10.8vw;
+            padding-left: 13.8vw; /* original padding 3.0vw + 10.8vw = 13.8vw */
+        }
+
+        #topText {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 2.3vw;
+            font-weight: 900;
+            letter-spacing: -0.01em;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        /* Bottom Bar: Title / Location / Role */
+        #bottomBar {
+            display: inline-flex;
+            align-items: center;
+            height: 4.4vh;
+            padding: 0.1vw 3vw 0.1vw 3.2vw;
+            min-width: 20vw;
+            box-sizing: border-box;
+            margin-top: 0.2vh; /* tiny physical gap */
+            
+            /* Slanted left edge */
+            clip-path: polygon(2.2vw 0%, 100% 0%, 100% 100%, 0% 100%);
+            
+            /* Theme overrides - brandColor solid background */
+            background: var(--theme-brandColor, #cc0909);
+            color: var(--theme-lite-color, #f5f6f8);
+        }
+
+        #bottomText {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.4vw;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            line-height: 1;
+            white-space: nowrap;
+        }
+    </style>
+
+    <script>
+        let clipNone = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
+        let clipEast = "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)";
+
+        function runTemplateUpdate() {
+            // Apply visual theme from dropdown
+            e('DynamicTheme').href = e('f99').innerText;
+
+            // Update texts
+            e('topText').innerHTML = htmlDecode(e('f0').innerText);
+            e('bottomText').innerHTML = htmlDecode(e('f1').innerText);
+
+            // Handle space for logo
+            let layoutMode = e('f2').innerText.trim();
+            if (layoutMode === 'no-logo') {
+                e('gfx').className = 'no-logo';
+            } else {
+                e('gfx').className = 'with-logo';
+            }
+
+            // Show / hide fields dynamically if empty
+            if (e('f0').innerText.trim() === '') {
+                e('topBar').style.display = 'none';
+            } else {
+                e('topBar').style.display = 'inline-flex';
+            }
+
+            if (e('f1').innerText.trim() === '') {
+                e('bottomBar').style.display = 'none';
+            } else {
+                e('bottomBar').style.display = 'inline-flex';
+            }
+
+            setTimeout(runAnimationIN, 50);
+        }
+
+        function runAnimationIN() {
+            var timelineIn = anime.timeline({
+                easing: 'easeOutCubic',
+                duration: 600
+            });
+
+            // Initial states
+            anime.set('#topBar', { clipPath: clipEast });
+            anime.set('#bottomBar', { clipPath: clipEast });
+
+            let finalTopClip = "polygon(2.2vw 0%, 100% 0%, 100% 100%, 0% 100%)";
+            let finalBottomClip = "polygon(2.2vw 0%, 100% 0%, 100% 100%, 0% 100%)";
+
+            timelineIn
+            .add({
+                targets: ['#gfx'],
+                opacity: [0, 1],
+                duration: 50,
+                easing: 'linear'
+            }, 0)
+            .add({
+                targets: ['#topBar'],
+                duration: 450,
+                clipPath: [clipEast, finalTopClip]
+            }, 50)
+            .add({
+                targets: ['#topText'],
+                opacity: [0, 1],
+                translateY: ['40%', '0%'],
+                duration: 400
+            }, 120)
+            .add({
+                targets: ['#bottomBar'],
+                duration: 450,
+                clipPath: [clipEast, finalBottomClip]
+            }, 180)
+            .add({
+                targets: ['#bottomText'],
+                opacity: [0, 1],
+                translateY: ['40%', '0%'],
+                duration: 400
+            }, 250);
+        }
+
+        function runAnimationOUT() {
+            var timelineOut = anime.timeline({
+                easing: 'easeInCubic',
+                duration: 500
+            });
+
+            let collapseTopClip = "polygon(2.2vw 0%, 2.2vw 0%, 0% 100%, 0% 100%)";
+            let collapseBottomClip = "polygon(2.2vw 0%, 2.2vw 0%, 0% 100%, 0% 100%)";
+
+            timelineOut
+            .add({
+                targets: ['#bottomText'],
+                opacity: [1, 0],
+                translateY: ['0%', '30%'],
+                duration: 180
+            }, 0)
+            .add({
+                targets: ['#bottomBar'],
+                duration: 300,
+                clipPath: collapseBottomClip
+            }, 50)
+            .add({
+                targets: ['#topText'],
+                opacity: [1, 0],
+                translateY: ['0%', '30%'],
+                duration: 180
+            }, 100)
+            .add({
+                targets: ['#topBar'],
+                duration: 300,
+                clipPath: collapseTopClip
+            }, 150)
+            .add({
+                targets: ['#gfx'],
+                opacity: 0,
+                duration: 50,
+                easing: 'linear'
+            }, 450);
+        }
+
+        // Define definition for SPX importer
+        window.SPXGCTemplateDefinition = {
+            "description": "IURD Guest Strap",
+            "playserver": "OVERLAY",
+            "playchannel": "1",
+            "playlayer": "3",
+            "webplayout": "3",
+            "out": "manual",
+            "dataformat": "json",
+            "uicolor": "3",
+            "DataFields": [
+                {
+                    "ftype": "instruction",
+                    "value": "Configure a identificação do orador (Nome e Cargo/Localidade) com o padrão visual IURD."
+                },
+                {
+                    "field": "f0",
+                    "ftype": "textfield",
+                    "title": "Nome do Orador (Linha Superior)",
+                    "value": "BISPO RENATO CARDOSO"
+                },
+                {
+                    "field": "f1",
+                    "ftype": "textfield",
+                    "title": "Cargo / Função (Linha Inferior)",
+                    "value": "PALESTRA DA FAMÍLIA"
+                },
+                {
+                    "field": "f2",
+                    "ftype": "dropdown",
+                    "title": "Espaço da Logo",
+                    "value": "with-logo",
+                    "items": [
+                        {
+                            "text": "Com Logo (Recuado à Esquerda)",
+                            "value": "with-logo"
+                        },
+                        {
+                            "text": "Sem Logo (Totalmente à Esquerda)",
+                            "value": "no-logo"
+                        }
+                    ]
+                },
+                {
+                    "field": "f99",
+                    "ftype": "filelist",
+                    "title": "Visual theme",
+                    "assetfolder": "./themes/",
+                    "extension": "css",
+                    "value": "./themes/Default.css"
+                }
+            ]
+        };
+    </script>
+</head>
+<body>
+    <div class="SPXWindow left">
+        <div id="gfx" class="with-logo">
+            <div id="topBar">
+                <span id="topText"></span>
+            </div>
+            <div id="bottomBar">
+                <span id="bottomText"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="hiddenSpxData" style="display:none;">
+        <div id="f0"></div>
+        <div id="f1"></div>
+        <div id="f2"></div>
+        <div id="f99"></div>
+    </div>
+</body>
+</html>
